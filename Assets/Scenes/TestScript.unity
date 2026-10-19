@@ -653,7 +653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1810967928128473905, guid: c18d94fb8a21ac042a1b0bc7754efffb, type: 3}
       propertyPath: m_TagString
-      value: Player
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1933723714518300956, guid: c18d94fb8a21ac042a1b0bc7754efffb, type: 3}
       propertyPath: m_Layer
@@ -873,6 +873,10 @@ MonoBehaviour:
   tiempoParaDetectar: 0.75
   tiempoParaPerder: 3
   vistaCono: {fileID: 0}
+  velocidadMaximaPersecucion: 8
+  rampaPersecucion: 1.5
+  aceleracionPersecucion: 30
+  giroPersecucion: 360
   distanciaCaptura: 1
   paramVelocidad: Speed
   paramPersiguiendo: Chasing
@@ -1076,7 +1080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Recolectable
   nombre: Disco Oro
-  radio: 2.5
+  radio: 4
 --- !u!1 &621200026
 GameObject:
   m_ObjectHideFlags: 0
@@ -1593,10 +1597,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movimiento
   speed: 5
+  velocidadCorrer: 8
+  teclaCorrer: 51
   velocidadGiro: 12
   cameraTransform: {fileID: 1899911644}
   teclaEsconder: 17
   velocidadAgachado: 0
+  suavizadoAnimacion: 0.1
   paramVelocidad: Speed
   paramEscondido: Hidden
 --- !u!4 &644258169 stripped
@@ -2086,7 +2093,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Recolectable
   nombre: Esmeralda
-  radio: 2.5
+  radio: 4
 --- !u!135 &1012455219
 SphereCollider:
   m_ObjectHideFlags: 0

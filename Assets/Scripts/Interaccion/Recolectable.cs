@@ -26,7 +26,7 @@ public class Recolectable : MonoBehaviour
         if (p != null)
             jugador = p.transform;
         else
-            Debug.LogWarning("Recolectable '" + nombre + "': no se encontró ningún objeto con el tag Player.");
+            Debug.LogWarning("Recolectable '" + nombre + "': no se encontr? ning?n objeto con el tag Player.");
     }
 
     void Update()
