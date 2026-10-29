@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SerpienteTest : MonoBehaviour
+public class Patrulla : MonoBehaviour
 {
     [Header("Patrulla")]
     public Transform[] puntos;
@@ -18,7 +18,7 @@ public class SerpienteTest : MonoBehaviour
     public ConoVisionVisual vistaCono;
 
     [Header("Sensación de persecución rápida")]
-    public float velocidadMaximaPersecucion = 8f;
+    public float velocidadMaximaPersecucion = 9f;
     public float rampaPersecucion = 1.5f;
     public float aceleracionPersecucion = 30f;
     public float giroPersecucion = 360f;
@@ -27,7 +27,7 @@ public class SerpienteTest : MonoBehaviour
     public float distanciaCaptura = 1.2f;
 
     [Header("Animator (parámetros opcionales)")]
-    public string paramVelocidad = "Speed";        
+    public string paramVelocidad = "Speed";       
     public string paramPersiguiendo = "Chasing";   
 
     private NavMeshAgent agente;
@@ -57,7 +57,7 @@ public class SerpienteTest : MonoBehaviour
             jugadorScript = jugador.GetComponent<Movimiento>();
 
         if (vistaCono != null)
-            vistaCono.Configurar(angulo, alcance);
+            vistaCono.Configurar(angulo, alcance, capaObstaculos);
 
         anim = GetComponentInChildren<Animator>();
         tieneSpeed = TieneParametro(paramVelocidad, AnimatorControllerParameterType.Float);
@@ -97,6 +97,7 @@ public class SerpienteTest : MonoBehaviour
 
         if (persiguiendo)
         {
+
             agente.speed = Mathf.MoveTowards(agente.speed, velocidadMaximaPersecucion,
                                              rampaPersecucion * Time.deltaTime);
 
@@ -111,7 +112,6 @@ public class SerpienteTest : MonoBehaviour
                 DesactivarPersecucion();
                 tiempoVisible = 0f;
                 tiempoOculto = 0f;
-
 
                 if (puntos.Length > 0)
                     agente.SetDestination(puntos[indice].position);
