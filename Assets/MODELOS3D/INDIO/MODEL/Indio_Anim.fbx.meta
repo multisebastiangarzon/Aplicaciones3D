@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: eec6e0931a62fe742bddf894d23aabcb
+guid: 5f4f1244115f58c4587017c2c3a71acf
 ModelImporter:
   serializedVersion: 24501
   internalIDToNameTable: []
@@ -37,9 +37,9 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Idle
-      takeName: Idle
-      internalID: -3100369314251171874
+      name: IDLE
+      takeName: IDLE
+      internalID: 2126459665172807778
       firstFrame: 1
       lastFrame: 52
       wrapMode: 0
@@ -66,9 +66,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Walk
-      takeName: Walk
-      internalID: 2667949614841947897
+      name: WALK
+      takeName: WALK
+      internalID: 864546719200000708
       firstFrame: 64
       lastFrame: 103
       wrapMode: 0
@@ -95,9 +95,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 64
     - serializedVersion: 16
-      name: Run
-      takeName: Run
-      internalID: 5522812681064789136
+      name: RUN
+      takeName: RUN
+      internalID: -4440360848040735060
       firstFrame: 112
       lastFrame: 139
       wrapMode: 0
@@ -124,9 +124,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 112
     - serializedVersion: 16
-      name: CrouchDown
-      takeName: CrouchDown
-      internalID: 328021667220252500
+      name: CROUCHDOWN
+      takeName: CROUCHDOWN
+      internalID: -7034753358246978438
       firstFrame: 148
       lastFrame: 162
       wrapMode: 0
@@ -151,11 +151,11 @@ ModelImporter:
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+      additiveReferencePoseFrame: 148
     - serializedVersion: 16
-      name: CrouchIdle
-      takeName: CrouchIdle
-      internalID: 4749916858553617154
+      name: CROUCHIDLE
+      takeName: CROUCHIDLE
+      internalID: 2641648149156155309
       firstFrame: 167
       lastFrame: 188
       wrapMode: 0
@@ -182,9 +182,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 167
     - serializedVersion: 16
-      name: CrouchUp
-      takeName: CrouchUp
-      internalID: 7153084695502706599
+      name: CROUCHUP
+      takeName: CROUCHUP
+      internalID: -6649304369957456359
       firstFrame: 194
       lastFrame: 208
       wrapMode: 0
@@ -211,9 +211,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 194
     - serializedVersion: 16
-      name: JumpUp
-      takeName: JumpUp
-      internalID: 8521470458871766595
+      name: JUMPUP
+      takeName: JUMPUP
+      internalID: -9035421492421804265
       firstFrame: 217
       lastFrame: 230
       wrapMode: 0
@@ -240,11 +240,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 217
     - serializedVersion: 16
-      name: JumpIdle
-      takeName: JumpIdle
-      internalID: -8575882982971814699
+      name: JUMPIDLE
+      takeName: JUMPIDLE
+      internalID: 2581474378733166609
       firstFrame: 235
-      lastFrame: 250
+      lastFrame: 251
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -269,9 +269,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 235
     - serializedVersion: 16
-      name: JumpLand
-      takeName: JumpLand
-      internalID: -4712104046758411098
+      name: JUMPLAND
+      takeName: JUMPLAND
+      internalID: -6947487109112010190
       firstFrame: 256
       lastFrame: 271
       wrapMode: 0
@@ -297,6 +297,93 @@ ModelImporter:
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 256
+    - serializedVersion: 16
+      name: CROUCHWALK
+      takeName: CROUCHWALK
+      internalID: -8664703949930547045
+      firstFrame: 281
+      lastFrame: 314
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 281
+    - serializedVersion: 16
+      name: REACHOUT
+      takeName: REACHOUT
+      internalID: 2390553106298230162
+      firstFrame: 327
+      lastFrame: 341
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 327
+    - serializedVersion: 16
+      name: REACHIN
+      takeName: REACHIN
+      internalID: 2190129405119490288
+      firstFrame: 348
+      lastFrame: 362
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 348
     isReadable: 0
   meshes:
     lODScreenPercentages: []
