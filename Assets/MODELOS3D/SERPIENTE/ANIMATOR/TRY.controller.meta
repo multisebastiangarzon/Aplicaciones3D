@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/MODELOS3D/SERPIENTE/ANIMATOR/TRY.controller.meta
 guid: b1648f28a1e3f1e43806f835b4056282
 NativeFormatImporter:
+========
+guid: f0036fe632048f94092223dbbd49d13f
+PrefabImporter:
+>>>>>>>> Stashed changes:Assets/MODELOS3D/SERPIENTE/ANIMATOR/SNAKE_ANIM.prefab.meta
   externalObjects: {}
   mainObjectFileID: 9100000
   userData: 

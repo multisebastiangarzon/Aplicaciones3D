@@ -481,12 +481,78 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
+<<<<<<< Updated upstream
   m_SourcePrefab: {fileID: 100100000, guid: e26ba9f427c6cbc4f85e9462ff598ca8, type: 3}
+=======
+  m_SourcePrefab: {fileID: 100100000, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
+--- !u!1001 &9033641385837493639
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4855986940639910172, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_Name
+      value: SNAKE_ANIM
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.1195
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.13566
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.0189
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5199474800333374374, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f0036fe632048f94092223dbbd49d13f, type: 3}
+>>>>>>> Stashed changes
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 407210999}
   - {fileID: 1387846827}
+<<<<<<< Updated upstream
   - {fileID: 4520419069430714438}
   - {fileID: 776718736}
+=======
+  - {fileID: 6403494869265874107}
+  - {fileID: 9033641385837493639}
+>>>>>>> Stashed changes
