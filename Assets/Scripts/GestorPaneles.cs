@@ -28,4 +28,13 @@ public class GestorPaneles : MonoBehaviour
         }
         fondoOscuro.SetActive(false);
     }
+
+    public bool HayPanelAbierto()
+    {
+        foreach (GameObject p in paneles)
+        {
+            if (p.activeSelf) return true;
+        }
+        return false;
+    }
 }
