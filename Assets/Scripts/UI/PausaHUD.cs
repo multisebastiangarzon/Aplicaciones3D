@@ -25,6 +25,8 @@ public class PausaHUD : MonoBehaviour
 
     void Update()
     {
+        if (AcertijoCultural.Activo) return;
+
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (gestorPaneles != null && gestorPaneles.HayPanelAbierto())
@@ -54,6 +56,8 @@ public class PausaHUD : MonoBehaviour
     public void Pausar()
     {
         if (pausado) return;
+        if (AcertijoCultural.Activo) return;
+
         pausado = true;
         Time.timeScale = 0f;
         fondoPausa.SetActive(true);

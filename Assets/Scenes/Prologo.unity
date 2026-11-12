@@ -553,7 +553,7 @@ MonoBehaviour:
   textoUI: {fileID: 1721528771}
   pistaContinuar: {fileID: 1780362652}
   audioSource: {fileID: 0}
-  fundido: {fileID: 0}
+  fundido: {fileID: 1178116156}
   retrasoInicial: 1
   velocidadTexto: 30
   duracionFade: 0.8
@@ -1047,6 +1047,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 461db71ed45ede544bb4e26b36582a11, type: 3}
+--- !u!114 &1178116156 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3680665073702625620, guid: 461db71ed45ede544bb4e26b36582a11, type: 3}
+  m_PrefabInstance: {fileID: 1172628573}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d5552460647dc4c86c056dda007548, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FundidoEscena
 --- !u!1 &1292224285
 GameObject:
   m_ObjectHideFlags: 0
