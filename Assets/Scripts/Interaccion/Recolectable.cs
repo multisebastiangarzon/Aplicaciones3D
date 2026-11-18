@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class Recolectable : MonoBehaviour
@@ -9,7 +11,15 @@ public class Recolectable : MonoBehaviour
     [Tooltip("Distancia (en metros) a la que el jugador puede recogerlo.")]
     public float radio = 2.5f;
 
+    [Header("Eventos")]
+    [Tooltip("Se dispara al recoger este objeto (sonido, mensaje en el HUD, etc.).")]
+    public UnityEvent alRecogido;
+
     public static int TotalRecogidos { get; private set; }
+
+    // Los demás scripts se suscriben a esto para enterarse de cada recogida.
+    // Envía el total de objetos recogidos hasta ahora.
+    public static event Action<int> AlRecoger;
 
     private Transform jugador;
     private bool jugadorCerca;
@@ -18,20 +28,20 @@ public class Recolectable : MonoBehaviour
     static void ReiniciarContador()
     {
         TotalRecogidos = 0;
-    }
-
-    void Start()
-    {
-        GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null)
-            jugador = p.transform;
-        else
-            Debug.LogWarning("Recolectable '" + nombre + "': no se encontr? ning?n objeto con el tag Player.");
+        AlRecoger = null;
     }
 
     void Update()
     {
-        if (jugador == null) return;
+        // No se puede recoger nada mientras el acertijo está abierto
+        if (AcertijoCultural.Activo) return;
+
+        if (jugador == null)
+        {
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p == null) return;
+            jugador = p.transform;
+        }
 
         Vector3 d = jugador.position - transform.position;
         d.y = 0f;
@@ -40,12 +50,11 @@ public class Recolectable : MonoBehaviour
         if (ahoraCerca != jugadorCerca)
         {
             jugadorCerca = ahoraCerca;
-            if (jugadorCerca) Debug.Log("Al alcance: " + nombre + " presiona E para recoger");
+            if (jugadorCerca) Debug.Log("Al alcance: " + nombre + " (presiona E para recoger)");
             else Debug.Log("Fuera del alcance: " + nombre);
         }
 
-        if (jugadorCerca && Keyboard.current != null &&
-            (Keyboard.current.eKey.wasPressedThisFrame))
+        if (jugadorCerca && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
             Recoger();
         }
@@ -54,10 +63,10 @@ public class Recolectable : MonoBehaviour
     void Recoger()
     {
         TotalRecogidos++;
-        Debug.Log("Objeto recogido: " + nombre + " (" + TotalRecogidos + "/2)");
+        Debug.Log("Objeto recogido: " + nombre + " (total: " + TotalRecogidos + ")");
 
-        if (TotalRecogidos >= 2)
-            Debug.Log("Ambos objetos sagrados recogidos: ya se puede hacer el ritual en el altar.");
+        alRecogido?.Invoke();
+        AlRecoger?.Invoke(TotalRecogidos);
 
         gameObject.SetActive(false);
     }

@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DISCO_LP
       objectReference: {fileID: 0}
+    - target: {fileID: 3566390031902043909, guid: 9e337b83fc830e746b5afc0d460233d6, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f732868852274642ad140161fde9ba4, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
