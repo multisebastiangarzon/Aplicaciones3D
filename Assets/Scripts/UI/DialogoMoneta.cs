@@ -15,7 +15,7 @@ public class DialogoMoneta : MonoBehaviour
     public GameObject panelRespuestas;
     public GameObject raizDialogo;
 
-    [Header("Animación de entrada")]
+    [Header("AnimaciÃ³n de entrada")]
     public CanvasGroup oscurecedor;
     public RectTransform retrato;
     public CanvasGroup burbuja;
@@ -39,10 +39,14 @@ public class DialogoMoneta : MonoBehaviour
     bool mostrarPista;
     Coroutine escritura;
     Vector2[] botonesFinal;
+    Vector3 escalaBurbuja = Vector3.one;   // escala configurada en el Inspector
 
     IEnumerator Start()
     {
         if (pausarJuego) Time.timeScale = 0f;
+
+        // Guardar la escala que tiene la burbuja en el Inspector
+        if (burbuja != null) escalaBurbuja = burbuja.transform.localScale;
 
         // Guardar posiciones finales
         Vector2 retratoFinal = retrato != null ? retrato.anchoredPosition : Vector2.zero;
@@ -61,7 +65,7 @@ public class DialogoMoneta : MonoBehaviour
         if (burbuja != null)
         {
             burbuja.alpha = 0;
-            burbuja.transform.localScale = Vector3.one * 0.85f;
+            burbuja.transform.localScale = escalaBurbuja * 0.85f;
         }
         if (retrato != null)
         {
@@ -70,7 +74,7 @@ public class DialogoMoneta : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(retrasoInicial);
 
-        // 1. Oscurecido y Monetá
+        // 1. Oscurecido y retrato
         if (oscurecedor != null) StartCoroutine(FadeGrupo(oscurecedor, duracionRetrato));
         if (retrato != null)
         {
@@ -202,11 +206,11 @@ public class DialogoMoneta : MonoBehaviour
             t += Time.unscaledDeltaTime;
             float k = Suave(Mathf.Clamp01(t / duracion));
             burbuja.alpha = k;
-            burbuja.transform.localScale = Vector3.one * Mathf.Lerp(0.85f, 1f, k);
+            burbuja.transform.localScale = escalaBurbuja * Mathf.Lerp(0.85f, 1f, k);
             yield return null;
         }
         burbuja.alpha = 1f;
-        burbuja.transform.localScale = Vector3.one;
+        burbuja.transform.localScale = escalaBurbuja;
     }
 
     IEnumerator FadeGrupo(CanvasGroup cg, float duracion)
