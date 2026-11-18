@@ -12,14 +12,16 @@ public class AcertijoCultural : MonoBehaviour
     [Header("Contenido")]
     public string titulo = "Acertijo";
     [TextArea(2, 5)] public string pregunta = "";
-    public string[] opciones = { "", "", "" };
+    public string[] opciones = { "Tunjos", "Pectorales", "Coronas" };
     public string[] prefijos = { "A) ", "B) ", "C) " };
-    [Tooltip("�ndice de la respuesta correcta: 0, 1 o 2.")]
+    [Tooltip("Índice de la respuesta correcta: 0, 1 o 2.")]
     public int correcta = 0;
-    public string mensajeAcierto = "";
-    public string mensajeError = "�Te oy�!";
+    public string mensajeAcierto = "¡Correcto!";
+    public string mensajeError = "¡Te oyó!";
 
-    [Header("Activaci�n")]
+    [Header("Activación")]
+    [Tooltip("Desmárcalo si lo abre un trigger o el diálogo.")]
+    public bool abrirConE = false;
     public float radio = 3f;
     public GameObject avisoE;
 
@@ -47,6 +49,8 @@ public class AcertijoCultural : MonoBehaviour
     public bool pausarJuego = true;
     public bool liberarCursor = true;
     public bool permitirTeclas = true;
+    [Tooltip("Si está marcado, tras fallar se puede volver a intentar.")]
+    public bool permitirReintento = false;
 
     [Header("Eventos")]
     public UnityEvent alAcertar;
@@ -65,10 +69,6 @@ public class AcertijoCultural : MonoBehaviour
 
     void Start()
     {
-        GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null) jugador = p.transform;
-        else Debug.LogWarning("AcertijoCultural: no hay objeto con tag Player.");
-
         imagenes = new Image[botones.Length];
         colorOriginal = new Color[botones.Length];
 
@@ -95,8 +95,15 @@ public class AcertijoCultural : MonoBehaviour
 
         if (!abierto)
         {
+            if (!abrirConE) return;
             if (Time.timeScale == 0f) return;
-            if (jugador == null) return;
+
+            if (jugador == null)
+            {
+                GameObject p = GameObject.FindGameObjectWithTag("Player");
+                if (p == null) return;
+                jugador = p.transform;
+            }
 
             Vector3 d = jugador.position - transform.position;
             d.y = 0f;
@@ -139,8 +146,11 @@ public class AcertijoCultural : MonoBehaviour
         }
     }
 
-    void Abrir()
+    // Público: lo llaman el trigger o el diálogo
+    public void Abrir()
     {
+        if (resuelto || abierto) return;
+
         abierto = true;
         Activo = true;
         if (avisoE != null) avisoE.SetActive(false);
@@ -202,10 +212,17 @@ public class AcertijoCultural : MonoBehaviour
         yield return new WaitForSecondsRealtime(tiempoMensaje);
 
         Cerrar();
-        resuelto = true;
 
-        if (acierto) alAcertar.Invoke();
-        else alFallar.Invoke();
+        if (acierto)
+        {
+            resuelto = true;
+            alAcertar.Invoke();
+        }
+        else
+        {
+            if (!permitirReintento) resuelto = true;
+            alFallar.Invoke();
+        }
     }
 
     void Cerrar()
