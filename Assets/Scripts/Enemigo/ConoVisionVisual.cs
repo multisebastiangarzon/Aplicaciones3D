@@ -8,8 +8,19 @@ public class ConoVisionVisual : MonoBehaviour
     [SerializeField] float angulo = 60f;
     [SerializeField] float alcance = 10f;
     [Range(8, 120)] public int segmentos = 40;
+    [Tooltip("Solo lo que bloquea la vista (rocas, paredes). NO incluyas aquí el terreno.")]
     public LayerMask obstaculos;
     public float alturaDeteccion = 0.45f;
+
+    [Header("Origen y orientación")]
+    [Tooltip("Objeto vacío situado entre los ojos. Si está vacío se usa este objeto.")]
+    public Transform ojos;
+    [Tooltip("Capas del terreno, para medir la altura del suelo. Opcional: si está vacío se usa el NavMesh.")]
+    public LayerMask suelo;
+    [Tooltip("Mayor = el cono gira más rápido. 0 = sin suavizado.")]
+    public float suavizadoDireccion = 8f;
+    [Tooltip("Mayor = la altura del suelo se actualiza más rápido. 0 = sin suavizado.")]
+    public float suavizadoAltura = 6f;
 
     [Header("Volumen (metros sobre el suelo)")]
     public float alturaCabeza = 1.2f;
@@ -21,6 +32,10 @@ public class ConoVisionVisual : MonoBehaviour
     [Range(0f, 1f)] public float opacidadRelleno = 0.30f;
     [Range(0f, 1f)] public float opacidadBorde = 0.90f;
 
+    // Para que la detección real (Patrulla) use el mismo origen y dirección que el dibujo
+    public Vector3 OrigenMundo { get; private set; }
+    public Vector3 FrenteMundo { get; private set; } = Vector3.forward;
+
     const int Punta = 0;
 
     Mesh malla;
@@ -28,13 +43,16 @@ public class ConoVisionVisual : MonoBehaviour
     Material materialPropio;
     Vector3[] vertices;
     Color[] colores;
-    int n;           
-    int anillo;      
-    int bloque;     
+    int n;
+    int anillo;
+    int bloque;
+
+    Vector3 frenteSuave = Vector3.forward;
+    float sueloSuave;
+    bool inicializado;
 
     int IndiceAbajo(int i) { return 1 + i; }
     int IndiceTecho(int i) { return 1 + anillo + i; }
-
 
     public void Configurar(float nuevoAngulo, float nuevoAlcance)
     {
@@ -74,7 +92,6 @@ public class ConoVisionVisual : MonoBehaviour
 
     void PrepararRenderer()
     {
-
         Shader shader = Shader.Find("Sprites/Default");
         if (shader != null)
         {
@@ -83,7 +100,7 @@ public class ConoVisionVisual : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("ConoVisionVisual: no se encontr� el shader Sprites/Default.");
+            Debug.LogWarning("ConoVisionVisual: no se encontró el shader Sprites/Default.");
         }
 
         mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -104,8 +121,8 @@ public class ConoVisionVisual : MonoBehaviour
 
         for (int i = 0; i < n; i++)
         {
-            tri[t++] = Punta; tri[t++] = IndiceAbajo(i); tri[t++] = IndiceAbajo(i + 1);  
-            tri[t++] = Punta; tri[t++] = IndiceTecho(i); tri[t++] = IndiceTecho(i + 1);   
+            tri[t++] = Punta; tri[t++] = IndiceAbajo(i); tri[t++] = IndiceAbajo(i + 1);
+            tri[t++] = Punta; tri[t++] = IndiceTecho(i); tri[t++] = IndiceTecho(i + 1);
         }
 
         tri[t++] = Punta; tri[t++] = IndiceTecho(0); tri[t++] = IndiceAbajo(0);
@@ -129,8 +146,8 @@ public class ConoVisionVisual : MonoBehaviour
 
         for (int i = 0; i < n; i++)
         {
-            Linea(IndiceAbajo(i), IndiceAbajo(i + 1));  
-            Linea(IndiceTecho(i), IndiceTecho(i + 1));   
+            Linea(IndiceAbajo(i), IndiceAbajo(i + 1));
+            Linea(IndiceTecho(i), IndiceTecho(i + 1));
         }
 
         malla.Clear();
@@ -143,54 +160,96 @@ public class ConoVisionVisual : MonoBehaviour
         ActualizarForma();
     }
 
+    // Altura del suelo bajo el origen: primero el terreno real, si no el NavMesh
+    float AlturaSuelo(Vector3 origen)
+    {
+        if (suelo.value != 0 &&
+            Physics.Raycast(origen + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 8f, suelo,
+                            QueryTriggerInteraction.Ignore))
+            return hit.point.y;
+
+        if (ajustarAlSuelo && NavMesh.SamplePosition(origen, out NavMeshHit nav, 3f, NavMesh.AllAreas))
+            return nav.position.y;
+
+        return origen.y;
+    }
+
     void ActualizarForma()
     {
         if (malla == null || vertices == null) return;
 
-        float escala = Mathf.Max(0.0001f, transform.lossyScale.x);   
-        float cabeza = alturaCabeza / escala;
-        float fondo = alturaFondo / escala;
+        // 1. Origen: los ojos (o este objeto si no se asignaron)
+        Transform fuente = ojos != null ? ojos : transform;
+        Vector3 origen = fuente.position;
 
-        float sueloLocal = 0f;
-        if (ajustarAlSuelo && NavMesh.SamplePosition(transform.position, out NavMeshHit nav, 3f, NavMesh.AllAreas))
-            sueloLocal = (nav.position.y - transform.position.y) / escala;
+        // 2. Dirección: solo horizontal, ignora cualquier inclinación del cuerpo
+        Vector3 objetivo = fuente.forward;
+        objetivo.y = 0f;
+        if (objetivo.sqrMagnitude < 0.0001f) objetivo = frenteSuave;
+        objetivo.Normalize();
 
-        Vector3 origenRayo = transform.position + Vector3.up * alturaDeteccion;
+        float dt = Time.deltaTime;
+
+        if (!inicializado || suavizadoDireccion <= 0f)
+        {
+            frenteSuave = objetivo;
+        }
+        else
+        {
+            float k = 1f - Mathf.Exp(-suavizadoDireccion * dt);
+            frenteSuave = Vector3.Slerp(frenteSuave, objetivo, k);
+            frenteSuave.y = 0f;
+            if (frenteSuave.sqrMagnitude < 0.0001f) frenteSuave = objetivo;
+            frenteSuave.Normalize();
+        }
+
+        // 3. Altura del suelo, suavizada para que el terreno irregular no la haga saltar
+        float sueloObjetivo = AlturaSuelo(origen);
+        if (!inicializado || suavizadoAltura <= 0f)
+            sueloSuave = sueloObjetivo;
+        else
+            sueloSuave = Mathf.Lerp(sueloSuave, sueloObjetivo, 1f - Mathf.Exp(-suavizadoAltura * dt));
+
+        inicializado = true;
+
+        // 4. Geometría del cono, calculada en el mundo
+        Vector3 centro = new Vector3(origen.x, sueloSuave, origen.z);
+        Vector3 origenRayo = centro + Vector3.up * alturaDeteccion;
         bool hayObstaculos = obstaculos.value != 0;
 
-        float inicio = -angulo * 0.5f * Mathf.Deg2Rad;
-        float paso = angulo * Mathf.Deg2Rad / n;
+        float inicio = -angulo * 0.5f;   // grados
+        float paso = angulo / n;
 
-        vertices[Punta] = new Vector3(0f, sueloLocal + cabeza, 0f);
+        vertices[Punta] = transform.InverseTransformPoint(centro + Vector3.up * alturaCabeza);
 
         for (int i = 0; i <= n; i++)
         {
-            float rad = inicio + paso * i;
-            Vector3 dirLocal = new Vector3(Mathf.Sin(rad), 0f, Mathf.Cos(rad));
+            Vector3 dir = Quaternion.AngleAxis(inicio + paso * i, Vector3.up) * frenteSuave;
 
             float distancia = alcance;
-            if (hayObstaculos)
-            {
-                Vector3 dirMundo = transform.TransformDirection(dirLocal);
-                if (Physics.Raycast(origenRayo, dirMundo, out RaycastHit hit, alcance, obstaculos,
-                                    QueryTriggerInteraction.Ignore))
-                    distancia = hit.distance;
-            }
+            if (hayObstaculos &&
+                Physics.Raycast(origenRayo, dir, out RaycastHit hit, alcance, obstaculos,
+                                QueryTriggerInteraction.Ignore))
+                distancia = hit.distance;
 
             float proporcion = alcance > 0f ? distancia / alcance : 0f;
-            Vector3 horizontal = dirLocal * (distancia / escala);
+            Vector3 punto = centro + dir * distancia;
 
-            float alturaAbajo = cabeza * (1f - proporcion);
-            float alturaTecho = Mathf.Lerp(cabeza, fondo, proporcion);
+            float alturaAbajo = alturaCabeza * (1f - proporcion);
+            float alturaTecho = Mathf.Lerp(alturaCabeza, alturaFondo, proporcion);
 
-            vertices[IndiceAbajo(i)] = new Vector3(horizontal.x, sueloLocal + alturaAbajo, horizontal.z);
-            vertices[IndiceTecho(i)] = new Vector3(horizontal.x, sueloLocal + alturaTecho, horizontal.z);
+            vertices[IndiceAbajo(i)] = transform.InverseTransformPoint(punto + Vector3.up * alturaAbajo);
+            vertices[IndiceTecho(i)] = transform.InverseTransformPoint(punto + Vector3.up * alturaTecho);
         }
 
+        // El segundo bloque (las líneas del borde) copia al primero
         System.Array.Copy(vertices, 0, vertices, bloque, bloque);
 
         malla.vertices = vertices;
         malla.RecalculateBounds();
+
+        OrigenMundo = centro;
+        FrenteMundo = frenteSuave;
     }
 
     void PintarColores()
