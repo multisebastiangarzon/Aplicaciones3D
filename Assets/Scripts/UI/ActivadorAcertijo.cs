@@ -7,23 +7,26 @@ public class ActivadorAcertijo : MonoBehaviour
     public AcertijoCultural acertijo;
 
     [Header("Opciones")]
-    [Tooltip("Si está marcado, la zona se desactiva tras usarse una vez.")]
+    [Tooltip("Si está marcado, la zona se desactiva cuando el acertijo se resuelve.")]
     public bool soloUnaVez = true;
 
-    private bool usado;
+    private bool resuelto;
 
     void Reset()
     {
-       
         GetComponent<Collider>().isTrigger = true;
+    }
+
+    public void MarcarResuelto()
+    {
+        if (soloUnaVez) resuelto = true;
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (usado || acertijo == null) return;
+        if (resuelto || acertijo == null) return;
         if (!other.CompareTag("Player")) return;
 
         acertijo.Abrir();
-        if (soloUnaVez) usado = true;
     }
 }
