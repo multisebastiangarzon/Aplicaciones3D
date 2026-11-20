@@ -17,19 +17,26 @@ public class Movimiento : MonoBehaviour
     public float multiplicadorCaida = 2f;
     public float tiempoCoyote = 0.1f;
     public float bufferSalto = 0.1f;
+    [Tooltip("Distancia bajo los pies a la que todavía se considera suelo.")]
     public float distanciaSuelo = 0.2f;
+    [Tooltip("Todo lo que cuenta como suelo. Quita Personajes y Decoracion.")]
     public LayerMask capasSuelo = ~0;
+
+    [Header("Pendientes")]
+    [Tooltip("Pendiente máxima que se puede subir caminando, en grados. " +
+             "En caras más empinadas no se trepa ni se puede saltar.")]
+    public float anguloMaxPendiente = 50f;
 
     [Header("Agacharse / Esconderse")]
     public Key teclaEsconder = Key.C;
     [Range(0f, 1f)] public float velocidadAgachado = 0f;
 
-    [Header("Animator (par�metros)")]
+    [Header("Animator (parámetros)")]
     public float suavizadoAnimacion = 0.1f;
-    public string paramVelocidad = "Speed";       
-    public string paramAgachado = "IsCrouching";  
-    public string paramEnSuelo = "IsGrounded";    
-    public string paramSalto = "Jump";            
+    public string paramVelocidad = "Speed";
+    public string paramAgachado = "IsCrouching";
+    public string paramEnSuelo = "IsGrounded";
+    public string paramSalto = "Jump";
 
     public bool EstaAgachado => agachado;
     public bool EstaEscondido => agachado && zonasEscondite > 0;
@@ -37,6 +44,7 @@ public class Movimiento : MonoBehaviour
     public bool EstaEnSuelo => enSuelo;
 
     const float SinTiempo = -10f;
+    static readonly Collider[] bufferSuelo = new Collider[8];
 
     Rigidbody rb;
     Collider col;
@@ -44,13 +52,15 @@ public class Movimiento : MonoBehaviour
     InputAction moveAction;
 
     Vector3 checkpointActual;
+    Vector3 normalEmpinada;
     Vector2 inputMovimiento;
-    float velocidadHorizontal;   
+    float velocidadHorizontal;
     int zonasEscondite;
-    bool agachado;
-    bool enSuelo;
+    bool agachado, enSuelo;
+    bool pendienteEmpinada, contactoLlano, bloqueaSalto;
     float ultimoTiempoSuelo = SinTiempo;
     float ultimoSaltoPresionado = SinTiempo;
+    float ultimoSalto = SinTiempo;
 
     int hashVelocidad, hashAgachado, hashEnSuelo, hashSalto;
     bool tieneVelocidad, tieneAgachado, tieneEnSuelo, tieneSalto;
@@ -89,15 +99,38 @@ public class Movimiento : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 dir = DireccionDeMovimiento();
+        
+        Vector3 dir = AcertijoCultural.Activo ? Vector3.zero : DireccionDeMovimiento();
 
         bool corriendo = !agachado && dir.sqrMagnitude > 0.001f && TeclaMantenida(teclaCorrer, RightTriggerMando());
         Vector3 horizontal = dir * (corriendo ? velocidadCorrer : speed);
+
+        if (pendienteEmpinada)
+        {
+            Vector3 fuera = new Vector3(normalEmpinada.x, 0f, normalEmpinada.z).normalized;
+            float dentro = Vector3.Dot(horizontal, fuera);
+            if (dentro < 0f) horizontal -= fuera * dentro;
+        }
+        bloqueaSalto = pendienteEmpinada && !contactoLlano;   // sin suelo normal bajo los pies no se salta
+        pendienteEmpinada = contactoLlano = false;            // se vuelven a marcar en el siguiente paso
 
         rb.linearVelocity = new Vector3(horizontal.x, CalcularVelocidadVertical(), horizontal.z);
 
         Rotar(dir);
         velocidadHorizontal = horizontal.magnitude;
+    }
+
+    void OnCollisionStay(Collision c)
+    {
+        float cosMax = Mathf.Cos(anguloMaxPendiente * Mathf.Deg2Rad);
+
+        for (int i = 0; i < c.contactCount; i++)
+        {
+            Vector3 n = c.GetContact(i).normal;
+
+            if (n.y >= cosMax) contactoLlano = true;
+            else if (n.y > 0.05f) { pendienteEmpinada = true; normalEmpinada = n; }
+        }
     }
 
 
@@ -169,17 +202,20 @@ public class Movimiento : MonoBehaviour
     float CalcularVelocidadVertical()
     {
         float vy = rb.linearVelocity.y;
-        enSuelo = vy <= 0.1f && DetectarSuelo();
+
+        // Justo tras saltar no cuenta como suelo, para no "tocar suelo" al despegar
+        enSuelo = Time.time - ultimoSalto >= 0.15f && DetectarSuelo();
         if (enSuelo) ultimoTiempoSuelo = Time.time;
 
-        bool puedeSaltar = !agachado && !DialogoInteractuable.Hablando;
+        bool puedeSaltar = !agachado && !bloqueaSalto && !DialogoInteractuable.Hablando && !AcertijoCultural.Activo;
         bool saltoPedido = Time.time - ultimoSaltoPresionado <= bufferSalto;
         bool apoyadoRecien = Time.time - ultimoTiempoSuelo <= tiempoCoyote;
 
         if (puedeSaltar && saltoPedido && apoyadoRecien)
         {
-            ultimoSaltoPresionado = SinTiempo;  
-            ultimoTiempoSuelo = SinTiempo;      
+            ultimoSaltoPresionado = ultimoTiempoSuelo = SinTiempo;
+            ultimoSalto = Time.time;
+            enSuelo = false;             // IsGrounded pasa a falso en el mismo instante
             if (tieneSalto) anim.SetTrigger(hashSalto);
 
             return Mathf.Sqrt(2f * -Physics.gravity.y * alturaSalto);
@@ -191,18 +227,24 @@ public class Movimiento : MonoBehaviour
         return vy;
     }
 
-    Vector3 OrigenDetectorSuelo()
+    // Esfera bajo los pies: cubre aristas, escalones y cuestas (un solo rayo fallaba ahí)
+    Vector3 CentroEsferaSuelo(out float radio)
     {
-        if (col == null) return transform.position + Vector3.up * 0.1f;
-
         Bounds b = col.bounds;
-        return new Vector3(b.center.x, b.min.y + 0.1f, b.center.z);
+        radio = Mathf.Min(b.extents.x, b.extents.z) * 0.9f;
+        return new Vector3(b.center.x, b.min.y + radio - distanciaSuelo, b.center.z);
     }
 
     bool DetectarSuelo()
     {
-        return Physics.Raycast(OrigenDetectorSuelo(), Vector3.down, 0.1f + distanciaSuelo,
-                               capasSuelo, QueryTriggerInteraction.Ignore);
+        if (col == null) return false;
+
+        Vector3 centro = CentroEsferaSuelo(out float radio);
+        int n = Physics.OverlapSphereNonAlloc(centro, radio, bufferSuelo, capasSuelo, QueryTriggerInteraction.Ignore);
+        for (int i = 0; i < n; i++)
+            if (bufferSuelo[i] != col && !bufferSuelo[i].transform.IsChildOf(transform)) return true;
+
+        return false;
     }
 
     void ConfigurarAnimator()
@@ -229,7 +271,7 @@ public class Movimiento : MonoBehaviour
             foreach (AnimatorControllerParameter p in parametros)
                 if (p.name == nombre && p.type == tipo) return true;
 
-        Debug.LogWarning("Movimiento: el Animator no tiene el par�metro '" + nombre + "' de tipo " + tipo + ".");
+        Debug.LogWarning("Movimiento: el Animator no tiene el parámetro '" + nombre + "' de tipo " + tipo + ".");
         return false;
     }
 
@@ -251,9 +293,12 @@ public class Movimiento : MonoBehaviour
     {
         rb.linearVelocity = Vector3.zero;
         transform.position = checkpointActual;
+        Physics.SyncTransforms();
+
         agachado = false;
         zonasEscondite = 0;
-        ultimoSaltoPresionado = SinTiempo;
+        pendienteEmpinada = bloqueaSalto = false;
+        ultimoSaltoPresionado = ultimoSalto = SinTiempo;
         Debug.Log("Jugador regresado al Checkpoint");
     }
 
@@ -268,11 +313,4 @@ public class Movimiento : MonoBehaviour
         if (other.CompareTag("Escondite")) zonasEscondite = Mathf.Max(0, zonasEscondite - 1);
     }
 
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        if (col == null) col = GetComponent<Collider>();
-        Vector3 origen = OrigenDetectorSuelo();
-        Gizmos.DrawLine(origen, origen + Vector3.down * (0.1f + distanciaSuelo));
-    }
 }
