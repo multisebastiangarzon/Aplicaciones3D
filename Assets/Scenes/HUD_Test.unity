@@ -11696,7 +11696,7 @@ MonoBehaviour:
   velocidadPersecucion: 4.5
   jugador: {fileID: 913034223}
   angulo: 60
-  alcance: 10
+  alcance: 12
   capaObstaculos:
     serializedVersion: 2
     m_Bits: 8
@@ -11704,10 +11704,10 @@ MonoBehaviour:
   tiempoParaDetectar: 1.2
   tiempoParaPerder: 2
   vistaCono: {fileID: 1102562227}
-  velocidadMaximaPersecucion: 6
+  velocidadMaximaPersecucion: 5
   rampaPersecucion: 1
   aceleracionPersecucion: 20
-  giroPersecucion: 240
+  giroPersecucion: 360
   intervaloDestino: 0.25
   anguloPersecucion: 120
   alcancePersecucion: 12
@@ -11715,10 +11715,10 @@ MonoBehaviour:
   tiempoParaPerderCerca: 3
   alturaSaltoTolerancia: 3
   cambiarConoVisualAlPerseguir: 0
-  distanciaCaptura: 0.8
+  distanciaCaptura: 1.2
   estadoAtaque: ATTACK
   duracionAtaque: 1
-  puntoGolpe: 0.9
+  puntoGolpe: 0.4
   paramVelocidad: Speed
   paramPersiguiendo: Chasing
   paramAtaque: IsAttacking
@@ -13770,7 +13770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movimiento
   speed: 3.5
-  velocidadCorrer: 5
+  velocidadCorrer: 4.5
   teclaCorrer: 51
   velocidadGiro: 12
   cameraTransform: {fileID: 2123812360}
@@ -16254,7 +16254,7 @@ MonoBehaviour:
   segmentos: 40
   obstaculos:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   alturaDeteccion: 0.45
   ojos: {fileID: 1316264381}
   suelo:
@@ -16267,7 +16267,7 @@ MonoBehaviour:
   ajustarAlSuelo: 0
   colorCono: {r: 1, g: 0.85, b: 0.2, a: 1}
   opacidadRelleno: 0.3
-  opacidadBorde: 0.9
+  opacidadBorde: 1
 --- !u!23 &1102562228
 MeshRenderer:
   m_ObjectHideFlags: 0
