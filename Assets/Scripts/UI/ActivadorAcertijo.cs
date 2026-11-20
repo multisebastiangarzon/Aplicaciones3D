@@ -17,6 +17,7 @@ public class ActivadorAcertijo : MonoBehaviour
         GetComponent<Collider>().isTrigger = true;
     }
 
+    // Llámalo desde AcertijoCultural al acertar
     public void MarcarResuelto()
     {
         if (soloUnaVez) resuelto = true;
