@@ -22,12 +22,6 @@ public class Movimiento : MonoBehaviour
     [Tooltip("Todo lo que cuenta como suelo. Quita Personajes y Decoracion.")]
     public LayerMask capasSuelo = ~0;
 
-    [Header("Audio")]
-    public AudioClip sonidoSalto;
-    [Range(0f, 1f)] public float volumenSalto = 0.8f;
-    [Tooltip("Rango aleatorio de tono para que no suene idéntico cada vez. 1 y 1 = sin variación.")]
-    public Vector2 variacionTono = new Vector2(0.95f, 1.05f);
-
     [Header("Pendientes")]
     [Tooltip("Pendiente máxima que se puede subir caminando, en grados. " +
              "En caras más empinadas no se trepa ni se puede saltar.")]
@@ -55,7 +49,6 @@ public class Movimiento : MonoBehaviour
     Rigidbody rb;
     Collider col;
     Animator anim;
-    AudioSource audioSrc;
     InputAction moveAction;
 
     Vector3 checkpointActual;
@@ -80,15 +73,6 @@ public class Movimiento : MonoBehaviour
 
         rb.constraints = RigidbodyConstraints.FreezeRotation;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
-
-        audioSrc = GetComponent<AudioSource>();
-        if (audioSrc == null)
-        {
-            audioSrc = gameObject.AddComponent<AudioSource>();
-            audioSrc.spatialBlend = 0f;   // 2D: se oye igual desde cualquier cámara
-        }
-        audioSrc.playOnAwake = false;
-        audioSrc.loop = false;
 
         CrearAccionMovimiento();
     }
@@ -115,6 +99,7 @@ public class Movimiento : MonoBehaviour
 
     void FixedUpdate()
     {
+        
         Vector3 dir = AcertijoCultural.Activo ? Vector3.zero : DireccionDeMovimiento();
 
         bool corriendo = !agachado && dir.sqrMagnitude > 0.001f && TeclaMantenida(teclaCorrer, RightTriggerMando());
@@ -233,8 +218,6 @@ public class Movimiento : MonoBehaviour
             enSuelo = false;             // IsGrounded pasa a falso en el mismo instante
             if (tieneSalto) anim.SetTrigger(hashSalto);
 
-            ReproducirSalto();
-
             return Mathf.Sqrt(2f * -Physics.gravity.y * alturaSalto);
         }
 
@@ -242,14 +225,6 @@ public class Movimiento : MonoBehaviour
             vy += Physics.gravity.y * (multiplicadorCaida - 1f) * Time.fixedDeltaTime;
 
         return vy;
-    }
-
-    void ReproducirSalto()
-    {
-        if (sonidoSalto == null || audioSrc == null) return;
-
-        audioSrc.pitch = Random.Range(variacionTono.x, variacionTono.y);
-        audioSrc.PlayOneShot(sonidoSalto, volumenSalto);
     }
 
     // Esfera bajo los pies: cubre aristas, escalones y cuestas (un solo rayo fallaba ahí)
