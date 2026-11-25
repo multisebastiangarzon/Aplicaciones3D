@@ -13813,7 +13813,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   sonidoSalto: {fileID: 8300000, guid: c3ea39a7908e44e478ce44cd20cb7a75, type: 3}
-  volumenSalto: 0.6
+  volumenSalto: 0.4
   variacionTono: {x: 0.95, y: 1.05}
   anguloMaxPendiente: 50
   teclaEsconder: 17
@@ -26750,6 +26750,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Recolectable
   nombre: Disco oro
   radio: 2.5
+  sonidoRecoger: {fileID: 0}
+  volumenRecoger: 0.8
   alRecogido:
     m_PersistentCalls:
       m_Calls: []
@@ -28076,6 +28078,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Recolectable
   nombre: Esmeralda
   radio: 2.5
+  sonidoRecoger: {fileID: 0}
+  volumenRecoger: 0.8
   alRecogido:
     m_PersistentCalls:
       m_Calls: []
