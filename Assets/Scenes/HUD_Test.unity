@@ -8704,6 +8704,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0aa28d90777887545a80ce6406f326cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 726284148}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0aa28d90777887545a80ce6406f326cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 726284152}
   m_SourcePrefab: {fileID: 100100000, guid: 0aa28d90777887545a80ce6406f326cd, type: 3}
 --- !u!4 &501364444 stripped
 Transform:
@@ -11722,6 +11725,7 @@ MonoBehaviour:
   paramVelocidad: Speed
   paramPersiguiendo: Chasing
   paramAtaque: IsAttacking
+  audioSerpiente: {fileID: 0}
 --- !u!95 &726284151
 Animator:
   serializedVersion: 7
@@ -11744,6 +11748,31 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &726284152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726284146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a84a06126847049b19d51ccc578da6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SerpienteAudio
+  audioMovimiento: {fileID: 0}
+  audioEfectos: {fileID: 0}
+  sonidoCaminar: {fileID: 8300000, guid: 88978bf779b4daa41b93462123d4a095, type: 3}
+  sonidoAlerta: {fileID: 8300000, guid: fcbffa7a5242c084e8911c0f346decb5, type: 3}
+  sonidoAtaque: {fileID: 8300000, guid: 46ff8c197f810974d9c4bbb5e2c227d2, type: 3}
+  volumenCaminar: 0.5
+  volumenAlerta: 0.9
+  volumenAtaque: 1
+  velocidadMinimaSonido: 0.2
+  pitchLento: 0.9
+  pitchRapido: 1.4
+  distanciaMinima: 2
+  distanciaMaxima: 18
 --- !u!1 &728776722 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5101820019298876919, guid: f653c20a659019049870a989db767dae, type: 3}
