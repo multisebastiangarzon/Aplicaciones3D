@@ -13920,6 +13920,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &913034230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 913034222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05c142c68179a43469d39e92efa74220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PasosJugador
+  pasos:
+  - {fileID: 8300000, guid: 6fc8a279140348945931f0bc802cdf4e, type: 3}
+  volumen: 0.2
+  intervaloCaminar: 0.5
+  intervaloCorrer: 0.32
+  umbralCorrer: 6.5
 --- !u!1 &924333176
 GameObject:
   m_ObjectHideFlags: 0
@@ -16218,6 +16236,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4617270072259560490, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 913034228}
+    - targetCorrespondingSourceObject: {fileID: 4617270072259560490, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 913034230}
   m_SourcePrefab: {fileID: 100100000, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
 --- !u!4 &1079701164 stripped
 Transform:
