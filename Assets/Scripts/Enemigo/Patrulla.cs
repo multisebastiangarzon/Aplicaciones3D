@@ -50,6 +50,10 @@ public class Patrulla : MonoBehaviour
     public string paramPersiguiendo = "Chasing";
     public string paramAtaque = "IsAttacking";
 
+    [Header("Audio")]
+    [Tooltip("Si se deja vacio, lo busca en este objeto")]
+    public SerpienteAudio audioSerpiente;
+
     NavMeshAgent agente;
     Animator anim;
     Movimiento jugadorScript;
@@ -73,6 +77,8 @@ public class Patrulla : MonoBehaviour
 
         if (jugador != null) jugadorScript = jugador.GetComponent<Movimiento>();
         if (vistaCono != null) vistaCono.Configurar(angulo, alcance, capaObstaculos);
+
+        if (audioSerpiente == null) audioSerpiente = GetComponent<SerpienteAudio>();
 
         anim = GetComponentInChildren<Animator>();
         hashSpeed = Animator.StringToHash(paramVelocidad);
@@ -169,7 +175,8 @@ public class Patrulla : MonoBehaviour
 
         if (anim != null && tieneAtaque) anim.SetBool(hashAtaque, true);
 
-        // 1) Esperar a entrar en ATTACK (maximo 0.5 s)
+        if (audioSerpiente != null) audioSerpiente.ReproducirAtaque();
+
         float t = 0f;
         while (anim != null && !anim.GetCurrentAnimatorStateInfo(0).IsName(estadoAtaque) && t < 0.5f)
         {
@@ -177,7 +184,6 @@ public class Patrulla : MonoBehaviour
             yield return null;
         }
 
-        // 2) Esperar al punto del golpe (con tope de seguridad)
         t = 0f;
         float tope = Mathf.Max(0.5f, duracionAtaque * 2f);
         while (anim != null && t < tope)
@@ -209,6 +215,8 @@ public class Patrulla : MonoBehaviour
 
     void OnDisable()
     {
+        if (audioSerpiente != null) audioSerpiente.Detener();
+
         if (atacando)
         {
             atacando = false;
@@ -240,7 +248,6 @@ public class Patrulla : MonoBehaviour
         float alc = persiguiendo ? alcancePersecucion : alcance;
         float cosA = persiguiendo ? cosMedioAnguloPersecucion : cosMedioAngulo;
 
-        // Olfato: muy cerca y persiguiendo, lo percibe sin necesitar el cono
         bool olfato = persiguiendo && sqr <= radioOlfato * radioOlfato;
 
         if (!olfato)
@@ -273,6 +280,8 @@ public class Patrulla : MonoBehaviour
         agente.acceleration = aceleracionPersecucion;
         agente.angularSpeed = giroPersecucion;
 
+        if (audioSerpiente != null) audioSerpiente.ReproducirAlerta();
+
         if (cambiarConoVisualAlPerseguir && vistaCono != null)
             vistaCono.Configurar(anguloPersecucion, alcancePersecucion, capaObstaculos);
     }
@@ -291,10 +300,15 @@ public class Patrulla : MonoBehaviour
 
     void ActualizarAnimator()
     {
-        if (anim == null) return;
-        if (tieneSpeed)
-            anim.SetFloat(hashSpeed, agente.velocity.magnitude / velocidadMaximaPersecucion, 0.1f, Time.deltaTime);
-        if (tieneChasing) anim.SetBool(hashChasing, persiguiendo);
+        if (anim != null)
+        {
+            if (tieneSpeed)
+                anim.SetFloat(hashSpeed, agente.velocity.magnitude / velocidadMaximaPersecucion, 0.1f, Time.deltaTime);
+            if (tieneChasing) anim.SetBool(hashChasing, persiguiendo);
+        }
+
+        if (audioSerpiente != null)
+            audioSerpiente.ActualizarMovimiento(agente.velocity.magnitude, velocidadMaximaPersecucion, atacando);
     }
 
     bool TieneParametro(string nombre, AnimatorControllerParameterType tipo)
