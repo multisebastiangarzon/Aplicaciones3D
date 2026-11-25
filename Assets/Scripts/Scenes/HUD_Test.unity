@@ -13833,6 +13833,23 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 913034222}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e50d0fe25e629c6428bf373c1436e4fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSaltoRB
+  sonidoSalto: {fileID: 8300000, guid: c3ea39a7908e44e478ce44cd20cb7a75, type: 3}
+  volumen: 0.3
+  variacionTono: {x: 0.95, y: 1.05}
+  umbralSalto: 3
+  tiempoEntreSaltos: 0.25
+--- !u!82 &913034228
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 913034222}
+  m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
@@ -13940,10 +13957,6 @@ MonoBehaviour:
   intervaloCaminar: 0.5
   intervaloCorrer: 0.32
   umbralCorrer: 6.5
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abaeaa9536e5a4544b3149dfe920b6ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ColliderSaltoRB
 --- !u!1 &924333176
 GameObject:
   m_ObjectHideFlags: 0
@@ -16245,6 +16258,8 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4617270072259560490, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 913034230}
+    - targetCorrespondingSourceObject: {fileID: 4617270072259560490, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 913034227}
   m_SourcePrefab: {fileID: 100100000, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
 --- !u!4 &1079701164 stripped
