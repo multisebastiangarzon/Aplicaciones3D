@@ -13828,8 +13828,8 @@ MonoBehaviour:
   paramAgachado: IsCrouching
   paramEnSuelo: IsGrounded
   paramSalto: Jump
---- !u!82 &913034228
-AudioSource:
+--- !u!114 &913034227
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -13943,6 +13943,10 @@ MonoBehaviour:
   intervaloCaminar: 0.5
   intervaloCorrer: 0.32
   umbralCorrer: 6.5
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abaeaa9536e5a4544b3149dfe920b6ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSaltoRB
 --- !u!1 &924333176
 GameObject:
   m_ObjectHideFlags: 0
@@ -16244,6 +16248,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4617270072259560490, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 913034230}
+      addedObject: {fileID: 913034227}
   m_SourcePrefab: {fileID: 100100000, guid: 29ad34e8bc917be448a340bc124216a5, type: 3}
 --- !u!4 &1079701164 stripped
 Transform:
@@ -19462,7 +19467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ActivadorAcertijo
   acertijo: {fileID: 581037930}
-  soloUnaVez: 0
+  soloUnaVez: 1
 --- !u!65 &1293217796
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19494,7 +19499,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.058849208, z: -0, w: 0.99826694}
   m_LocalPosition: {x: 12.541581, y: 9.739582, z: 97.037544}
-  m_LocalScale: {x: 46.10863, y: 22.842543, z: 14.614173}
+  m_LocalScale: {x: 46.10863, y: 22.842543, z: 5.537979}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 753640497}
@@ -32268,16 +32273,16 @@ SceneRoots:
   - {fileID: 700175722}
   - {fileID: 1594818326}
   - {fileID: 581037931}
-  - {fileID: 2123812360}
-  - {fileID: 813299829}
-  - {fileID: 215908530}
   - {fileID: 1077588905}
   - {fileID: 112380541}
   - {fileID: 753640497}
   - {fileID: 492488177}
+  - {fileID: 813299829}
   - {fileID: 281435871}
-  - {fileID: 643315115}
+  - {fileID: 2123812360}
+  - {fileID: 215908530}
   - {fileID: 1797371933}
   - {fileID: 1884493437}
+  - {fileID: 643315115}
   - {fileID: 739960019}
   - {fileID: 236792035}
