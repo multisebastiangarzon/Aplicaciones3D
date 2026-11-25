@@ -11,8 +11,13 @@ public class Recolectable : MonoBehaviour
     [Tooltip("Distancia (en metros) a la que el jugador puede recogerlo.")]
     public float radio = 2.5f;
 
+    [Header("Audio")]
+    [Tooltip("Sonido que se reproduce al recoger el objeto.")]
+    public AudioClip sonidoRecoger;
+    [Range(0f, 1f)] public float volumenRecoger = 0.8f;
+
     [Header("Eventos")]
-    [Tooltip("Se dispara al recoger este objeto (sonido, mensaje en el HUD, etc.).")]
+    [Tooltip("Se dispara al recoger este objeto (mensaje en el HUD, etc.).")]
     public UnityEvent alRecogido;
 
     public static int TotalRecogidos { get; private set; }
@@ -64,6 +69,11 @@ public class Recolectable : MonoBehaviour
     {
         TotalRecogidos++;
         Debug.Log("Objeto recogido: " + nombre + " (total: " + TotalRecogidos + ")");
+
+        // PlayClipAtPoint crea una fuente temporal: el sonido termina aunque
+        // el objeto se desactive justo después.
+        if (sonidoRecoger != null)
+            AudioSource.PlayClipAtPoint(sonidoRecoger, transform.position, volumenRecoger);
 
         alRecogido?.Invoke();
         AlRecoger?.Invoke(TotalRecogidos);
