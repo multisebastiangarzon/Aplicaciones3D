@@ -10,6 +10,7 @@ public class ConoVisionVisual : MonoBehaviour
     [Range(8, 120)] public int segmentos = 40;
     [Tooltip("Solo lo que bloquea la vista (rocas, paredes). NO incluyas aquí el terreno.")]
     public LayerMask obstaculos;
+    [Tooltip("Patrulla lo iguala a su 'alturaOjos' al iniciar, para que el dibujo y la deteccion usen el mismo rayo.")]
     public float alturaDeteccion = 0.45f;
 
     [Header("Origen y orientación")]
@@ -17,7 +18,7 @@ public class ConoVisionVisual : MonoBehaviour
     public Transform ojos;
     [Tooltip("Capas del terreno, para medir la altura del suelo. Opcional: si está vacío se usa el NavMesh.")]
     public LayerMask suelo;
-    [Tooltip("Mayor = el cono gira más rápido. 0 = sin suavizado.")]
+    [Tooltip("Mayor = el cono gira más rápido. 0 = sin suavizado (dibujo y deteccion giran exactamente igual que el cuerpo).")]
     public float suavizadoDireccion = 8f;
     [Tooltip("Mayor = la altura del suelo se actualiza más rápido. 0 = sin suavizado.")]
     public float suavizadoAltura = 6f;
@@ -25,16 +26,18 @@ public class ConoVisionVisual : MonoBehaviour
     [Header("Volumen (metros sobre el suelo)")]
     [Tooltip("Solo se usa si NO hay objeto Ojos. Con Ojos, la altura sale de su posición.")]
     public float alturaCabeza = 1.2f;
-    [Tooltip("Altura del techo al final del alcance. Ponla cerca de la altura del jugador.")]
-    public float alturaFondo = 0.4f;
+    [Tooltip("Altura del borde superior al final del alcance. 0 = el cono termina tocando el suelo.")]
+    public float alturaFondo = 0.1f;
     public bool ajustarAlSuelo = true;
+    [Tooltip("El final del cono se apoya en el terreno real en cada rayo (cuestas, desniveles).")]
+    public bool seguirTerreno = true;
 
     [Header("Apariencia")]
     public Color colorCono = new Color(1f, 0.85f, 0.2f);
     [Range(0f, 1f)] public float opacidadRelleno = 0.30f;
     [Range(0f, 1f)] public float opacidadBorde = 0.90f;
 
-    // Para que la detección real (Patrulla) use el mismo origen y dirección que el dibujo
+    // Patrulla usa estos valores para que la deteccion real coincida con el dibujo
     public Vector3 OrigenMundo { get; private set; }
     public Vector3 FrenteMundo { get; private set; } = Vector3.forward;
 
@@ -162,18 +165,27 @@ public class ConoVisionVisual : MonoBehaviour
         ActualizarForma();
     }
 
-    // Altura del suelo bajo el origen: primero el terreno real, si no el NavMesh
-    float AlturaSuelo(Vector3 origen)
+    // Altura del suelo en un punto: primero el terreno real (capa 'suelo'), luego el NavMesh.
+    // 'arriba' y 'abajo' definen cuanto se sube y se baja el rayo desde la altura de referencia.
+    float BuscarSuelo(Vector3 punto, float yReferencia, float arriba, float abajo,
+                      float radioNavMesh, float porDefecto)
     {
-        if (suelo.value != 0 &&
-            Physics.Raycast(origen + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 8f, suelo,
-                            QueryTriggerInteraction.Ignore))
-            return hit.point.y;
+        if (suelo.value != 0)
+        {
+            Vector3 desde = new Vector3(punto.x, yReferencia + arriba, punto.z);
+            if (Physics.Raycast(desde, Vector3.down, out RaycastHit hit, arriba + abajo, suelo,
+                                QueryTriggerInteraction.Ignore))
+                return hit.point.y;
+        }
 
-        if (ajustarAlSuelo && NavMesh.SamplePosition(origen, out NavMeshHit nav, 3f, NavMesh.AllAreas))
-            return nav.position.y;
+        if (ajustarAlSuelo)
+        {
+            Vector3 desde = new Vector3(punto.x, yReferencia, punto.z);
+            if (NavMesh.SamplePosition(desde, out NavMeshHit nav, radioNavMesh, NavMesh.AllAreas))
+                return nav.position.y;
+        }
 
-        return origen.y;
+        return porDefecto;
     }
 
     void ActualizarForma()
@@ -202,8 +214,11 @@ public class ConoVisionVisual : MonoBehaviour
             frenteSuave.Normalize();
         }
 
-        // 3. Altura del suelo, suavizada
-        float sueloObjetivo = AlturaSuelo(origen);
+        // 3. Altura del suelo bajo el origen, suavizada.
+        //    Si no se encuentra suelo, con Ojos se usa la base de este objeto (no la altura de los ojos,
+        //    que dejaria el cono aplastado a la altura de la cabeza).
+        float respaldo = ojos != null ? transform.position.y : origen.y;
+        float sueloObjetivo = BuscarSuelo(origen, origen.y, 2f, 6f, 3f, respaldo);
         sueloSuave = (!inicializado || suavizadoAltura <= 0f)
             ? sueloObjetivo
             : Mathf.Lerp(sueloSuave, sueloObjetivo, 1f - Mathf.Exp(-suavizadoAltura * dt));
@@ -247,6 +262,12 @@ public class ConoVisionVisual : MonoBehaviour
             float proporcion = alcance > 0f ? distancia / alcance : 0f;
             Vector3 punto = centro + dir * distancia;
 
+            // El final del cono se apoya en el terreno real de ESE punto, no en el del origen
+            if (seguirTerreno)
+                punto.y = BuscarSuelo(punto, sueloSuave, 1.5f, 3f, 1.5f, sueloSuave);
+
+            // Borde inferior: baja de la cabeza al suelo (toca el suelo al final del alcance)
+            // Borde superior: baja de la cabeza a 'alturaFondo'
             float alturaAbajo = cabeza * (1f - proporcion);
             float alturaTecho = Mathf.Lerp(cabeza, alturaFondo, proporcion);
 
