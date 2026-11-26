@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 375538544, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  m_Sprite: {fileID: -1779119619, guid: b82ba455254d91346b38c87df2359f55, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -91,11 +91,11 @@ MonoBehaviour:
   imagenBarra: {fileID: 8882613338236241127}
   niveles:
   - {fileID: 340032538, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 258796216, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 375538544, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 1977063134, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 1045755488, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 1383365120, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: 1398769811, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: -1779119619, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: 258569679, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: -1391583428, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: -1391583428, guid: b82ba455254d91346b38c87df2359f55, type: 3}
   nivelActual: 3
 --- !u!1 &1319084414128384840
 GameObject:
@@ -1279,7 +1279,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 375538544, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  m_Sprite: {fileID: 1398769811, guid: b82ba455254d91346b38c87df2359f55, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1304,11 +1304,11 @@ MonoBehaviour:
   imagenBarra: {fileID: 4744000578581518316}
   niveles:
   - {fileID: 340032538, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 258796216, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 375538544, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 1977063134, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 1045755488, guid: b82ba455254d91346b38c87df2359f55, type: 3}
-  - {fileID: 1383365120, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: 1398769811, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: -1779119619, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: 258569679, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: -1391583428, guid: b82ba455254d91346b38c87df2359f55, type: 3}
+  - {fileID: -1391583428, guid: b82ba455254d91346b38c87df2359f55, type: 3}
   nivelActual: 3
 --- !u!1 &7909481264976989199
 GameObject:
