@@ -15,9 +15,17 @@ public class PausaHUD : MonoBehaviour
     CursorLockMode bloqueoPrevio;
     bool visiblePrevio;
 
+    // No se puede pausar con el acertijo abierto ni durante el cierre del juego.
+    bool Bloqueado
+    {
+        get { return AcertijoCultural.Activo || AltarRitual.Cerrando; }
+    }
+
     void Start()
     {
-        Time.timeScale = 1f;
+        // Si Monetá ya congeló el juego, no lo descongeles.
+        if (!DialogoMoneta.Congelando) Time.timeScale = 1f;
+
         fondoPausa.SetActive(false);
         panelPausa.SetActive(false);
         AsegurarEventSystem();
@@ -25,7 +33,7 @@ public class PausaHUD : MonoBehaviour
 
     void Update()
     {
-        if (AcertijoCultural.Activo) return;
+        if (Bloqueado) return;
 
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
@@ -55,8 +63,7 @@ public class PausaHUD : MonoBehaviour
 
     public void Pausar()
     {
-        if (pausado) return;
-        if (AcertijoCultural.Activo) return;
+        if (pausado || Bloqueado) return;
 
         pausado = true;
         Time.timeScale = 0f;
@@ -73,7 +80,10 @@ public class PausaHUD : MonoBehaviour
     {
         if (!pausado) return;
         pausado = false;
-        Time.timeScale = 1f;
+
+        // Si Monetá sigue abierta, el juego sigue congelado.
+        Time.timeScale = DialogoMoneta.Congelando ? 0f : 1f;
+
         fondoPausa.SetActive(false);
         panelPausa.SetActive(false);
 
