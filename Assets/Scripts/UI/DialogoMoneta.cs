@@ -6,6 +6,9 @@ using TMPro;
 
 public class DialogoMoneta : MonoBehaviour
 {
+    // Verdadero mientras Monetá está abierta y congela el juego.
+    public static bool Congelando { get; private set; }
+
     [Header("Contenido")]
     [TextArea(2, 4)] public string[] lineas;
     public TextMeshProUGUI textoUI;
@@ -31,24 +34,31 @@ public class DialogoMoneta : MonoBehaviour
     [Header("Ajustes")]
     public float velocidadTexto = 30f;
     public float velocidadPulso = 3f;
-    public bool pausarJuego = false;
+    public bool pausarJuego = true;
+    public bool liberarCursor = true;
     public UnityEvent alTerminar;
 
     int indice = -1;
     bool escribiendo;
     bool mostrarPista;
+    bool abierto = true;
+    bool cursorCapturado;
+    CursorLockMode bloqueoPrevio;
+    bool visiblePrevio;
     Coroutine escritura;
     Vector2[] botonesFinal;
-    Vector3 escalaBurbuja = Vector3.one;   // escala configurada en el Inspector
+    Vector3 burbujaEscalaFinal = Vector3.one;
+
+    void Awake()
+    {
+        // Se marca en Awake para que PausaHUD lo sepa antes de su Start.
+        Congelando = pausarJuego;
+    }
 
     IEnumerator Start()
     {
         if (pausarJuego) Time.timeScale = 0f;
 
-        // Guardar la escala que tiene la burbuja en el Inspector
-        if (burbuja != null) escalaBurbuja = burbuja.transform.localScale;
-
-        // Guardar posiciones finales
         Vector2 retratoFinal = retrato != null ? retrato.anchoredPosition : Vector2.zero;
         botonesFinal = new Vector2[botonesRespuesta.Length];
         for (int i = 0; i < botonesRespuesta.Length; i++)
@@ -56,7 +66,6 @@ public class DialogoMoneta : MonoBehaviour
             botonesFinal[i] = botonesRespuesta[i].anchoredPosition;
         }
 
-        // Estado inicial: todo escondido
         panelRespuestas.SetActive(false);
         botonAvanzar.SetActive(false);
         textoUI.text = "";
@@ -64,8 +73,10 @@ public class DialogoMoneta : MonoBehaviour
         if (oscurecedor != null) oscurecedor.alpha = 0;
         if (burbuja != null)
         {
+            // Se guarda la escala que dejaste en el editor y se anima relativa a ella.
+            burbujaEscalaFinal = burbuja.transform.localScale;
             burbuja.alpha = 0;
-            burbuja.transform.localScale = escalaBurbuja * 0.85f;
+            burbuja.transform.localScale = burbujaEscalaFinal * 0.85f;
         }
         if (retrato != null)
         {
@@ -74,20 +85,17 @@ public class DialogoMoneta : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(retrasoInicial);
 
-        // 1. Oscurecido y retrato
         if (oscurecedor != null) StartCoroutine(FadeGrupo(oscurecedor, duracionRetrato));
         if (retrato != null)
         {
             yield return Mover(retrato, retratoFinal, duracionRetrato, 0f);
         }
 
-        // 2. Burbuja
         if (burbuja != null)
         {
             yield return AparecerBurbuja();
         }
 
-        // 3. Texto
         botonAvanzar.SetActive(true);
         Avanzar();
     }
@@ -107,6 +115,31 @@ public class DialogoMoneta : MonoBehaviour
         }
     }
 
+    void LateUpdate()
+    {
+        if (!abierto || !liberarCursor) return;
+
+        if (!cursorCapturado)
+        {
+            bloqueoPrevio = Cursor.lockState;
+            visiblePrevio = Cursor.visible;
+            cursorCapturado = true;
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    void OnDisable()
+    {
+        Congelando = false;
+    }
+
+    void OnDestroy()
+    {
+        Congelando = false;
+    }
+
     public void Avanzar()
     {
         if (escribiendo)
@@ -124,7 +157,16 @@ public class DialogoMoneta : MonoBehaviour
 
     public void Elegir()
     {
+        abierto = false;
+        Congelando = false;
         if (pausarJuego) Time.timeScale = 1f;
+
+        if (liberarCursor && cursorCapturado)
+        {
+            Cursor.lockState = bloqueoPrevio;
+            Cursor.visible = visiblePrevio;
+        }
+
         alTerminar.Invoke();
         raizDialogo.SetActive(false);
     }
@@ -206,11 +248,11 @@ public class DialogoMoneta : MonoBehaviour
             t += Time.unscaledDeltaTime;
             float k = Suave(Mathf.Clamp01(t / duracion));
             burbuja.alpha = k;
-            burbuja.transform.localScale = escalaBurbuja * Mathf.Lerp(0.85f, 1f, k);
+            burbuja.transform.localScale = burbujaEscalaFinal * Mathf.Lerp(0.85f, 1f, k);
             yield return null;
         }
         burbuja.alpha = 1f;
-        burbuja.transform.localScale = escalaBurbuja;
+        burbuja.transform.localScale = burbujaEscalaFinal;
     }
 
     IEnumerator FadeGrupo(CanvasGroup cg, float duracion)

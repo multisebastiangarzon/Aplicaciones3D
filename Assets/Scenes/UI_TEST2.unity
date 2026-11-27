@@ -427,6 +427,7 @@ GameObject:
   - component: {fileID: 424416724}
   - component: {fileID: 424416723}
   - component: {fileID: 424416722}
+  - component: {fileID: 424416725}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -508,6 +509,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &424416725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424416721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!114 &459165835 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 288387160518801515, guid: 5ada279551b9d6f40b5e1eca988204c2, type: 3}
@@ -963,8 +1008,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3117489163174008265, guid: 461db71ed45ede544bb4e26b36582a11, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2144664209}
   m_SourcePrefab: {fileID: 100100000, guid: 461db71ed45ede544bb4e26b36582a11, type: 3}
+--- !u!1 &784818602 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3117489163174008265, guid: 461db71ed45ede544bb4e26b36582a11, type: 3}
+  m_PrefabInstance: {fileID: 784818601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &786936596
 GameObject:
   m_ObjectHideFlags: 0
@@ -2347,6 +2400,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 2144664209}
+        m_TargetAssemblyTypeName: ReiniciarProgreso, Assembly-CSharp
+        m_MethodName: Reiniciar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2144664208}
         m_TargetAssemblyTypeName: FundidoEscena, Assembly-CSharp
         m_MethodName: CargarEscena
@@ -3166,12 +3231,24 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3680665073702625620, guid: 461db71ed45ede544bb4e26b36582a11, type: 3}
   m_PrefabInstance: {fileID: 784818601}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 784818602}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 39d5552460647dc4c86c056dda007548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FundidoEscena
+--- !u!114 &2144664209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784818602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee7e40d7da222b47b334a6770ea55ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReiniciarProgreso
 --- !u!1001 &279918242722641703
 PrefabInstance:
   m_ObjectHideFlags: 0
