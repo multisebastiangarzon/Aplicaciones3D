@@ -52,6 +52,10 @@ public class AcertijoCultural : MonoBehaviour
     [Tooltip("Si está marcado, tras fallar se puede volver a intentar.")]
     public bool permitirReintento = false;
 
+    [Header("Sonido")]
+    [Tooltip("Objeto con SonidoAcertijo. Ponlo FUERA del panel para que no se corte al cerrarse.")]
+    public SonidoAcertijo sonidos;
+
     [Header("Eventos")]
     public UnityEvent alAcertar;
     public UnityEvent alFallar;
@@ -196,6 +200,13 @@ public class AcertijoCultural : MonoBehaviour
     {
         respondiendo = true;
         bool acierto = n == correcta;
+
+        // Sonido de acierto / error en el instante de la respuesta
+        if (sonidos != null)
+        {
+            if (acierto) sonidos.Correcto();
+            else sonidos.Incorrecto();
+        }
 
         if (imagenes[n] != null)
             imagenes[n].color = acierto ? colorBotonAcierto : colorBotonError;
